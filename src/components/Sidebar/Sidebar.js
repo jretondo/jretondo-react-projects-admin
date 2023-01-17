@@ -179,7 +179,7 @@ class Sidebar extends React.Component {
           toggle={this.toggleActivity}
         />
         <Navbar
-          className="navbar-vertical fixed-left navbar-dark bg-ligth"
+          className="navbar-vertical fixed-left navbar-dark bg-dark"
           expand="md"
           id="sidenav-main"
         >
@@ -242,7 +242,7 @@ class Sidebar extends React.Component {
               </UncontrolledDropdown>
             </Nav>
             {/* Collapse */}
-            <Collapse navbar isOpen={this.state.collapseOpen}>
+            <Collapse navbar className="navbar-vertical fixed-left navbar-light bg-dark" isOpen={this.state.collapseOpen}>
               {/* Collapse header */}
               <div className="navbar-collapse-header d-md-none">
                 <Row>
@@ -263,11 +263,10 @@ class Sidebar extends React.Component {
                     <button
                       className="navbar-toggler"
                       type="button"
-                      style={{ color: "black" }}
                       onClick={this.toggleCollapse}
                     >
-                      <span />
-                      <span />
+                      <span style={{ background: "#0081c9" }} />
+                      <span style={{ background: "#0081c9" }} />
                     </button>
                   </Col>
                 </Row>

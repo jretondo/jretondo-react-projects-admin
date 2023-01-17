@@ -11,7 +11,7 @@ export const ModalActivity = ({
     toggle
 }) => {
     const [page, setPage] = useState(1)
-    const [refresList, setRefreshList] = useState(false)
+    const [refreshList, setRefreshList] = useState(false)
     const [userSearch, setUserSearch] = useState("")
     const [fromDate, setFromDate] = useState(moment(new Date()).format("YYYY-MM-DD"))
     const [toDate, setToDate] = useState(moment(new Date()).format("YYYY-MM-DD"))
@@ -24,7 +24,7 @@ export const ModalActivity = ({
     } = useAxiosGetList(
         UrlNodeServer.activityDir.activity,
         page,
-        refresList,
+        refreshList,
         [
             { userId: userSearch },
             { dateFrom: fromDate },
@@ -39,7 +39,7 @@ export const ModalActivity = ({
             </ModalHeader>
             <ModalBody>
                 <Header
-                    toggleRefresh={() => setRefreshList(!refresList)}
+                    toggleRefresh={() => setRefreshList(!refreshList)}
                     userSearch={userSearch}
                     setUserSearch={setUserSearch}
                     fromDate={fromDate}

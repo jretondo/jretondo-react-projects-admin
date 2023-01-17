@@ -1,11 +1,11 @@
 {
-  "name": "club-de-la-limpieza-admin",
+  "name": "projects-administrator-frontend",
   "version": "1.1.0",
-  "description": "Herramienta ideal para la administración de empresas",
+  "description": "Herramienta front ideal para la administración de empresas",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nekonet-ar/ContaNET-Principal-ReactJS.git"
+    "url": "git+https://github.com/jretondo/jretondo-react-projects-admin.git"
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"
@@ -23,9 +23,9 @@
   "author": "Nekonet",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nekonet-ar/ContaNET-Principal-ReactJS/issues"
+    "url": "https://github.com/jretondo/jretondo-react-projects-admin/issues"
   },
-  "homepage": "https://muni-lacalera.nekoadmin.com.ar/",
+  "homepage": "https://projects-administrator.nekoadmin.com.ar/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

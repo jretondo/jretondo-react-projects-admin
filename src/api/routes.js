@@ -1,5 +1,5 @@
-const PROJECT = ""
-const LOCAL_PORT = "3010"
+const PROJECT = "projects-administrator"
+const LOCAL_PORT = "3017"
 const API_PRODUCTION_ADDRESS = "https://api-prod.nekoadmin.com.ar"
 let host = ""
 let publicFiles = ""

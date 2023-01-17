@@ -38,7 +38,7 @@ const Auth = () => {
     <>
       <div className="main-content">
         <AuthNavbar />
-        <div className="header bg-gradient-secondary py-5">
+        <div className="header bg-gradient-primary py-5">
           <Container>
             <div className="header-body text-center mb-7">
               <Row className="justify-content-center">
