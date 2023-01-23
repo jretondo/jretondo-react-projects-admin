@@ -27,11 +27,11 @@ export const ModalMyProfile = ({
     useEffect(() => {
         try {
             setDataUser({
-                name: dataPage[0].name,
-                lastname: dataPage[0].lastname,
-                email: dataPage[0].email,
-                tel: dataPage[0].tel,
-                user: dataPage[0].user
+                name: dataPage.name,
+                lastname: dataPage.lastname,
+                email: dataPage.email,
+                tel: dataPage.tel,
+                user: dataPage.user
             })
         } catch (error) {
 

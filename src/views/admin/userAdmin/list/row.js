@@ -1,31 +1,37 @@
-import React, { useContext } from 'react';
-import { DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap';
-import swal from 'sweetalert';
+import React, { useContext } from 'react'
+import UrlNodeServer from '../../../../api/routes'
+import {
+    DropdownMenu,
+    DropdownItem,
+    UncontrolledDropdown,
+    DropdownToggle
+} from "reactstrap"
+import swal from 'sweetalert'
 import alertsContext from 'context/alerts';
 import actionsBackend from 'context/actionsBackend';
-import '../shimmer.css';
-import UrlNodeServer from '../../../api/routes';
+import 'components/Lists/shimmer.css';
 
-export const SectorRow = ({
+const UserRow = ({
     id,
     item,
+    setDetBool,
     refreshToggle,
-    setIdSector,
+    setIdDetail,
     first,
     page,
-    setPage
+    setPage,
+    setPermissionsBool,
+    setIdUser,
+    setUserName
 }) => {
     const { newAlert, newActivity } = useContext(alertsContext)
     const { axiosDelete, loadingActions } = useContext(actionsBackend)
 
-    const details = (idSector) => {
-        setIdSector(idSector)
-    }
-
-    const remove = (sector, idSector) => {
+    const deleteUser = async (e, id, name, first, page) => {
+        e.preventDefault()
         swal({
-            title: "Eliminar el sector " + sector + "!",
-            text: "¿Está seguro de eliminar a este sector? Esta desición es permanente.",
+            title: "Eliminar al usuario " + name + "!",
+            text: "¿Está seguro de eliminar a este usuario? Esta desición es permanente.",
             icon: "warning",
             buttons: {
                 cancel: "No",
@@ -36,15 +42,15 @@ export const SectorRow = ({
             .then(async (willDelete) => {
                 let backPage = false
                 if (willDelete) {
-                    const response = await axiosDelete(UrlNodeServer.sectorsDir.sectors, idSector)
+                    const response = await axiosDelete(UrlNodeServer.usersDir.users, id)
                     if (!response.error) {
                         if (first) {
                             if (page > 1) {
                                 backPage = true
                             }
                         }
-                        newActivity(`Se ha eliminado el sector ${sector} (id: ${idSector})`)
-                        newAlert("success", "Sector eliminado con éxito!", "")
+                        newActivity(`Se ha eliminado alusuario ${item.name} ${item.lastname} (id: ${item.user})`)
+                        newAlert("success", "Usuario eliminado con éxito!", "")
                         if (backPage) {
                             setPage(parseInt(page - 1))
                         } else {
@@ -57,13 +63,32 @@ export const SectorRow = ({
             });
     }
 
+    const details = (e, id) => {
+        e.preventDefault()
+        setIdDetail(id)
+        setDetBool(true)
+    }
+
+    const givePermissions = (e, id, name) => {
+        e.preventDefault()
+        setUserName(name)
+        setIdUser(id)
+        setPermissionsBool(true)
+    }
+
     return (
-        <tr key={id} className={loadingActions ? "shimmer" : ""}>
-            <td style={{ textAlign: "center", fontSize: "14px", fontWeight: "bold" }}>
-                {item.sector}
+        <tr key={id} className={loadingActions ? "shimmer" : ""} >
+            <td style={{ textAlign: "center" }}>
+                {item.name + " " + item.lastname}
             </td>
             <td style={{ textAlign: "center" }}>
-                {item.description}
+                {item.name}
+            </td>
+            <td style={{ textAlign: "center" }}>
+                {item.email}
+            </td>
+            <td style={{ textAlign: "center" }}>
+                {item.tel}
             </td>
             <td className="text-right">
                 <UncontrolledDropdown>
@@ -80,19 +105,22 @@ export const SectorRow = ({
                     <DropdownMenu className="dropdown-menu-arrow" right>
                         <DropdownItem
                             href="#pablo"
-                            onClick={e => {
-                                e.preventDefault()
-                                details(item.id)
-                            }}>
+                            onClick={e => details(e, item.id)}
+                        >
                             <i className="fas fa-edit"></i>
                             Editar
                         </DropdownItem>
                         <DropdownItem
                             href="#pablo"
-                            onClick={e => {
-                                e.preventDefault()
-                                remove(item.sector, item.id)
-                            }}>
+                            onClick={e => givePermissions(e, item.id, item.name + " " + item.lastname)}
+                        >
+                            <i className="fas fa-id-card"></i>
+                            Dar Permisos
+                        </DropdownItem>
+                        <DropdownItem
+                            href="#pablo"
+                            onClick={e => deleteUser(e, item.id, item.name + " " + item.lastname, first, page)}
+                        >
                             <i className="fas fa-trash-alt"></i>
                             Eliminar
                         </DropdownItem>
@@ -102,3 +130,5 @@ export const SectorRow = ({
         </tr>
     )
 }
+
+export default UserRow

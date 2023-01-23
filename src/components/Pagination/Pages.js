@@ -8,13 +8,21 @@ import {
 const PaginationComp = ({
     page,
     setPage,
-    dataPages
+    totalItems,
+    itemsPerPage
 }) => {
     const [layoutPages, setLayoutPages] = useState(<></>)
+    const [lastPage, setLastPage] = useState(0)
+
+    useEffect(() => {
+        setLastPage(Math.ceil((totalItems / itemsPerPage)))
+        // eslint-disable-next-line
+    }, [page, totalItems, itemsPerPage])
+
     useEffect(() => {
         listPages()
         // eslint-disable-next-line
-    }, [page, dataPages.quantityPages, dataPages.lastPage])
+    }, [lastPage])
 
     const pagePrev = (e) => {
         e.preventDefault()
@@ -25,8 +33,8 @@ const PaginationComp = ({
 
     const nextPage = (e) => {
         e.preventDefault()
-        if (dataPages.lastPage > page) {
-            setPage(dataPages.lastPage)
+        if (lastPage > page) {
+            setPage(lastPage)
         }
     }
 
@@ -38,24 +46,31 @@ const PaginationComp = ({
     }
 
     const listPages = () => {
-        if (dataPages.lastPage) {
-            setLayoutPages(
-                dataPages.quantityPages.map((pageNumber, key) => {
-                    return (
-                        <PaginationItem className={page === pageNumber ? "active" : ""} key={key}>
-                            <PaginationLink
-                                href="#"
-                                onClick={e => changePage(e, pageNumber)}
-                            >
-                                {pageNumber}
-                            </PaginationLink>
-                        </PaginationItem>
-                    )
-                })
-            )
+        if (lastPage > 0) {
+            let pages = <></>
+            const first = (page - 2) < 1 ? 1 : (page - 2)
+            const last = (page + 2) >= lastPage ? lastPage : (page + 2)
+
+            for (let i = 0; i < last; i++) {
+                pages = <>
+                    {pages}
+                    {(i + first) <= lastPage && <PaginationItem className={page === i + first ? "active" : ""} key={i + first}>
+                        <PaginationLink
+                            href="#"
+                            onClick={e => changePage(e, i + first)}
+                        >
+                            {i + first}
+                        </PaginationLink>
+                    </PaginationItem>}
+                </>
+            }
+            setLayoutPages(pages)
+        } else {
+            setLayoutPages(<></>)
         }
     }
-    if (dataPages.lastPage) {
+
+    if (lastPage > 0) {
         return (
             <>
                 <nav aria-label="...">
@@ -76,7 +91,7 @@ const PaginationComp = ({
 
                         {layoutPages}
 
-                        <PaginationItem className={page === dataPages.lastPage ? "disabled" : ""}>
+                        <PaginationItem className={page === lastPage ? "disabled" : ""}>
                             <PaginationLink
                                 href="#"
                                 onClick={e => nextPage(e)}

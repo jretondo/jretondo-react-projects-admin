@@ -1,14 +1,15 @@
 import { TableList } from '../../../Lists/TableList';
 import React, { useEffect, useState } from 'react';
 import { Col, Row, Spinner } from 'reactstrap';
-import ActivityRow from 'components/Lists/Rows/activityRow';
+import ActivityRow from './row';
 import PaginationComp from 'components/Pagination/Pages';
 
 const List = ({
     dataPage,
     page,
     setPage,
-    pageObj,
+    totalItems,
+    itemsPerPage,
     errorList,
     loadingList
 }) => {
@@ -51,7 +52,8 @@ const List = ({
                     <PaginationComp
                         page={page}
                         setPage={setPage}
-                        dataPages={pageObj}
+                        itemsPerPage={itemsPerPage}
+                        totalItems={totalItems}
                     />
                 </Col>
             </Row>

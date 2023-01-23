@@ -1,7 +1,7 @@
 import apiRoutes from '../../../../api/routes'
 import React, { useEffect, useState } from 'react'
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, Row, Spinner } from 'reactstrap'
-import UserRow from 'components/Lists/Rows/usersRow'
+import UserRow from './row'
 import { SearchFormComponent } from 'components/Search/Search1'
 import Pagination from 'components/Pagination/Pages'
 import { TableList } from '../../../../components/Lists/TableList'
@@ -24,7 +24,8 @@ const UserList = ({
 
     const {
         dataPage,
-        pageObj,
+        itemsPerPage,
+        totalItems,
         errorList,
         loadingList
     } = useAxiosGetList(
@@ -36,7 +37,7 @@ const UserList = ({
         if (errorList) {
             setList(
                 <tr style={{ textAlign: "center", width: "100%" }}>
-                    <td> <span style={{ textAlign: "center", marginRight: "auto", marginLeft: "auto" }}> No hay productos cargados</span></td>
+                    <td> <span style={{ textAlign: "center", marginRight: "auto", marginLeft: "auto" }}> No hay usuarios cargados</span></td>
                 </tr>
             )
         } else {
@@ -123,11 +124,12 @@ const UserList = ({
                         </Button>
                     </Col>
                     <Col>
-                        {!pageObj ? null : <Pagination
+                        <Pagination
                             page={page}
                             setPage={setPage}
-                            dataPages={pageObj}
-                        />}
+                            totalItems={totalItems}
+                            itemsPerPage={itemsPerPage}
+                        />
                     </Col>
                 </Row>
             </CardFooter>

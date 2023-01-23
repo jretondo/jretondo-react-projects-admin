@@ -17,7 +17,8 @@ export const ModalActivity = ({
     const [toDate, setToDate] = useState(moment(new Date()).format("YYYY-MM-DD"))
 
     const {
-        pageObj,
+        itemsPerPage,
+        totalItems,
         dataPage,
         errorList,
         loadingList
@@ -53,7 +54,8 @@ export const ModalActivity = ({
                     dataPage={dataPage}
                     page={page}
                     setPage={setPage}
-                    pageObj={pageObj}
+                    itemsPerPage={itemsPerPage}
+                    totalItems={totalItems}
                     errorList={errorList}
                     loadingList={loadingList}
                 />

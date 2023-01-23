@@ -3,14 +3,16 @@ import { processQueries } from 'function/processQueries';
 import { useState, useEffect } from 'react';
 
 export const useAxiosGetList = (url, page, refresh, queries) => {
-    const [pageObj, setPagesObj] = useState([])
+    const [totalItems, setTotalItems] = useState(0)
+    const [itemsPerPage, setItemsPerPage] = useState(0)
     const [dataPage, setDataPage] = useState([])
     const [errorList, setErrorList] = useState(null)
     const [loadingList, setLoadingList] = useState(false)
 
     useEffect(() => {
         const getList = async () => {
-            setPagesObj([])
+            setTotalItems(0)
+            setItemsPerPage(0)
             setDataPage([])
             setErrorList(null)
             setLoadingList(true)
@@ -28,19 +30,19 @@ export const useAxiosGetList = (url, page, refresh, queries) => {
                 }
             }).then(res => {
                 if (res.data.status === 200) {
-
-                    if (res.data.body.data) {
-                        if (res.data.body.data.length > 0) {
-                            setDataPage(res.data.body.data)
-                            setPagesObj(res.data.body.pagesObj)
+                    if (res.data.body.items) {
+                        if (res.data.body.items.length > 0) {
+                            setDataPage(res.data.body.items)
+                            setItemsPerPage(res.data.body.itemsPerPage)
+                            setTotalItems(res.data.body.totalItems)
                         } else {
-                            setErrorList("No hay datos para mostrar")
+                            setErrorList("No hay filas para mostrar")
                         }
                     } else {
                         setDataPage(res.data.body)
                     }
                 } else {
-                    setErrorList("No hay datos para mostrar")
+                    setErrorList("No hay filas para mostrar")
                 }
             }).catch(error => {
                 setErrorList(error.message)
@@ -54,5 +56,5 @@ export const useAxiosGetList = (url, page, refresh, queries) => {
         // eslint-disable-next-line
     }, [page, url, refresh])
 
-    return { pageObj, dataPage, errorList, loadingList }
+    return { totalItems, itemsPerPage, dataPage, errorList, loadingList }
 }

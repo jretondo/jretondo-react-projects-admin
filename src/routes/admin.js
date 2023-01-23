@@ -1,5 +1,6 @@
 import index from "views/admin/dashboard"
 import userAdmin from 'views/admin/userAdmin'
+import clients from 'views/admin/clients';
 
 var routes = [
   {
@@ -16,6 +17,14 @@ var routes = [
     component: userAdmin,
     layout: process.env.PUBLIC_URL + "/admin",
     id: 1
+  },
+  {
+    path: "/clients",
+    name: "Clientes",
+    icon: "ni ni-building text-red",
+    component: clients,
+    layout: process.env.PUBLIC_URL + "/admin",
+    id: 2
   },
 ];
 export default routes;
