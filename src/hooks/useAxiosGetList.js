@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { processQueries } from 'function/processQueries';
+import { processQueries } from '../function/processQueries';
 import { useState, useEffect } from 'react';
 
 export const useAxiosGetList = (url, page, refresh, queries) => {

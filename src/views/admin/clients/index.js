@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import secureContext from 'context/secureRoutes';
-import apiRoutes from '../../../api/routes';
-import { Card, CardHeader, Container } from 'reactstrap';
+import API_ROUTES from '../../../api/routes';
+import { Card, Container } from 'reactstrap';
 import Header from 'components/Headers/Header';
 import ClientForm from './components/form';
 import ClientsList from './components/list';
@@ -9,11 +9,12 @@ import ClientsList from './components/list';
 const ClientsModule = () => {
     const [newForm, setNewForm] = useState(false)
     const [idClient, setIdClient] = useState(false)
+    const [stringSearched, setStringSearched] = useState("")
     const { setUrlRoute } = useContext(secureContext)
 
     useEffect(() => {
         if (!idClient) {
-            setNewForm(true)
+            setNewForm(false)
         }
     }, [idClient])
 
@@ -24,13 +25,13 @@ const ClientsModule = () => {
     }, [newForm])
 
     useEffect(() => {
-        setUrlRoute(apiRoutes.routesDir.sub.userAdmin)
+        setUrlRoute(API_ROUTES.routesDir.sub.clients)
     }, [setUrlRoute])
+
     return (<>
         <Header />
         <Container className="mt--7" fluid>
             <Card>
-
                 {
                     newForm ?
                         <ClientForm
@@ -40,10 +41,10 @@ const ClientsModule = () => {
                         <ClientsList
                             setNewForm={setNewForm}
                             setIdClient={setIdClient}
-                            idClient={idClient}
+                            stringSearched={stringSearched}
+                            setStringSearched={setStringSearched}
                         />
                 }
-
             </Card>
         </Container>
     </>)

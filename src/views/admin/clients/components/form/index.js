@@ -1,25 +1,28 @@
 import API_ROUTES from '../../../../../api/routes';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, CardBody, CardHeader, Col, DropdownItem, DropdownMenu, DropdownToggle, Form, FormGroup, Input, InputGroup, InputGroupButtonDropdown, Label, Row, Spinner } from 'reactstrap';
 import AlertsContext from '../../../../../context/alerts';
 import ActionsBackend from '../../../../../context/actionsBackend';
+import { verifyCuit } from 'function/verifyCuit';
+import { verifyDni } from 'function/verifyDni';
 
 const ClientForm = ({
     setNewForm,
     idClient
 }) => {
     const [isOpenDropdown, setIsOpenDropdown] = useState(false)
-    const [documentTypeStr, setDocumentTypeStr] = useState("CUIT")
-    const [documentType, setDocumentType] = useState(80)
-    const [documentNumber, setDocumentNumber] = useState("")
-    const [businessName, setBusinessName] = useState("")
-    const [fantasieName, setFantasieName] = useState("")
-    const [email, setEmail] = useState("")
-    const [ivaCondition, setIvaCondition] = useState(6)
+    const [documentTypeStr, setDocumentTypeStr] = useState(idClient ? idClient.document_type === 80 ? "CUIT" : "DNI" : "CUIT")
+    const [documentType, setDocumentType] = useState(idClient ? idClient.document_type : 80)
+    const [documentNumber, setDocumentNumber] = useState(idClient ? idClient.document_number : "")
+    const [businessName, setBusinessName] = useState(idClient ? idClient.business_name : "")
+    const [fantasieName, setFantasieName] = useState(idClient ? idClient.fantasie_name : "")
+    const [email, setEmail] = useState(idClient ? idClient.email : "")
+    const [ivaCondition, setIvaCondition] = useState(idClient ? idClient.IvaConditions[0].description : 6)
     const [loading, setLoading] = useState(false)
+    const [isValidDocument, setIsValidDocument] = useState(null)
 
     const { newAlert, newActivity } = useContext(AlertsContext)
-    const { axiosGet, axiosPost } = useContext(ActionsBackend)
+    const { axiosPost } = useContext(ActionsBackend)
 
     const resetForm = (e) => {
         e && e.preventDefault()
@@ -30,38 +33,49 @@ const ClientForm = ({
         setFantasieName("")
         setEmail("")
         setIvaCondition(6)
+        document.getElementById("document-number").select()
     }
 
     const onSubmit = async (e) => {
         e.preventDefault()
-        setLoading(true)
-        const client = {
-            document_type: documentType,
-            document_number: documentNumber,
-            business_name: businessName,
-            fantasie_name: fantasieName,
-            email: email,
-            iva_condition_id: ivaCondition
-        }
-        idClient && (client.id = idClient)
+        if (isValidDocument) {
 
-        const response = await axiosPost(API_ROUTES.clientsDir.clients, client)
-
-        if (!response.error) {
-            resetForm()
-            if (idClient) {
-                newActivity(`Se ha modificado al cliente ${businessName} CUIT/DNI: ${documentNumber}`)
-                newAlert("success", "Cliente modificado con éxito!", "")
-                setNewForm(false)
-            } else {
-                newActivity(`Se ha creado al cliente ${businessName} CUIT/DNI: ${documentNumber}`)
-                newAlert("success", "Cliente agregado con éxito!", "")
+            setLoading(true)
+            const client = {
+                document_type: documentType,
+                document_number: documentNumber,
+                business_name: businessName,
+                fantasie_name: fantasieName,
+                email: email,
+                iva_condition_id: ivaCondition
             }
+            idClient && (client.id = idClient)
+
+            const response = await axiosPost(API_ROUTES.clientsDir.clients, client)
+
+            if (!response.error) {
+                resetForm()
+                if (idClient) {
+                    newActivity(`Se ha modificado al cliente ${businessName} CUIT/DNI: ${documentNumber}`)
+                    newAlert("success", "Cliente modificado con éxito!", "")
+                    setNewForm(false)
+                } else {
+                    newActivity(`Se ha creado al cliente ${businessName} CUIT/DNI: ${documentNumber}`)
+                    newAlert("success", "Cliente agregado con éxito!", "")
+                }
+            } else {
+                newAlert("danger", "Hubo un error!", "Revise que el documento del cliente no esté repetido. Error: " + response.errorMsg)
+            }
+            setLoading(false)
         } else {
-            newAlert("danger", "Hubo un error!", "Revise que el documento del cliente no esté repetido. Error: " + response.errorMsg)
+            newAlert("danger", "Hubo un error!", "El número de " + documentTypeStr + " es inválido!")
+            document.getElementById("document-number").select()
         }
-        setLoading(false)
     }
+
+    useEffect(() => {
+        document.getElementById("document-number").select()
+    }, [])
 
     return (
         <>
@@ -113,26 +127,38 @@ const ClientForm = ({
                                                     </DropdownMenu>
                                                 </InputGroupButtonDropdown>
                                                 <Input
+                                                    required
+                                                    invalid={isValidDocument === null ? false : !isValidDocument}
+                                                    valid={isValidDocument === null ? false : isValidDocument}
+                                                    id="document-number"
                                                     type="text"
                                                     style={{ paddingLeft: "10px" }}
                                                     placeholder={documentTypeStr + "..."}
                                                     value={documentNumber}
                                                     onChange={e => {
                                                         setDocumentNumber(e.target.value)
+                                                        documentType === 80 ?
+                                                            setIsValidDocument(verifyCuit(e.target.value).isCuit) :
+                                                            setIsValidDocument(verifyDni(e.target.value))
                                                     }}
                                                 />
                                             </InputGroup>
+
                                         </FormGroup>
                                     </Col>
                                     <Col md="5">
                                         <FormGroup>
                                             <Label>Razón Social</Label>
                                             <Input
+                                                required
                                                 type="text"
                                                 placeholder="Razón social..."
                                                 value={businessName}
                                                 onChange={e => {
                                                     setBusinessName(e.target.value)
+                                                }}
+                                                onBlur={() => {
+                                                    setFantasieName(businessName)
                                                 }}
                                             />
                                         </FormGroup>
@@ -160,6 +186,8 @@ const ClientForm = ({
                                         <FormGroup>
                                             <Label>Nombre de Fantasía</Label>
                                             <Input
+                                                required
+                                                id="fantasie-name"
                                                 type="text"
                                                 placeholder="Nombre de fantasia..."
                                                 value={fantasieName}

@@ -80,6 +80,7 @@ class Sidebar extends React.Component {
               const id = prop.id
 
               function check(item) {
+
                 return item.id_permission === id;
               }
 
@@ -100,24 +101,6 @@ class Sidebar extends React.Component {
                     </NavLink>
                   </NavItem>
                 );
-              } if (prop.id === 1) {
-                const admin = localStorage.getItem("admin")
-                if (parseInt(admin) === 1) {
-                  return (
-                    <NavItem key={key}>
-                      <NavLink
-                        to={prop.layout + prop.path}
-                        tag={NavLinkRRD}
-                        onClick={this.closeCollapse}
-                        activeClassName="active"
-                        style={{ color: "#0081c9", fontWeight: "bold" }}
-                      >
-                        <i className={prop.icon} />
-                        {prop.name}
-                      </NavLink>
-                    </NavItem>
-                  );
-                }
               } else {
                 if (found) {
                   return (
